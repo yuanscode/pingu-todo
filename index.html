@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pingu family to-do, Sun 11 Oct</title><style>
+body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:#fbf6ef;color:#3a2f28}
+main{max-width:480px;margin:0 auto;padding:28px 18px}h1{font-size:1.4rem;margin:0 0 6px}
+#prog{color:#8a7766;margin-bottom:10px}.bar{height:6px;background:#efe3d3;border-radius:3px;margin-bottom:20px}.bar i{display:block;height:100%;background:#e08a4f;border-radius:3px;transition:width .3s}
+label{display:flex;align-items:center;gap:14px;background:#fff;padding:16px;border-radius:14px;margin-bottom:10px;box-shadow:0 1px 3px #0000000d;font-size:1.05rem}
+input{width:24px;height:24px;accent-color:#e08a4f}details{margin-top:18px;color:#8a7766}details label{opacity:.6;text-decoration:line-through}
+footer{text-align:center;color:#a8957f;font-size:.85rem;margin-top:30px}#msg{color:#c0392b;font-size:.9rem}</style></head><body><main>
+<h1 id="t">Pingu family to-do, Sun 11 Oct</h1><div id="prog">Loading…</div><div class="bar"><i id="b" style="width:0"></i></div>
+<div id="list"></div><details id="dd"><summary id="ds">Done</summary><div id="done"></div></details><div id="msg"></div>
+<footer>From Yuan's Grok bot</footer></main><script>
+const U="https://api.restful-api.dev/objects/ff808181a09d98f701a129ee30e13afc";let S=null;
+async function load(){try{const r=await fetch(U,{cache:"no-store"});S=(await r.json());render();msg("")}catch(e){msg("Couldn't load, retrying…")}}
+function msg(m){document.getElementById("msg").textContent=m}
+function row(it){const l=document.createElement("label");const c=document.createElement("input");c.type="checkbox";c.checked=it.done;c.onchange=()=>toggle(it.id,c.checked);l.append(c,document.createTextNode(it.text));return l}
+function render(){const its=S.data.items,d=its.filter(i=>i.done).length;document.getElementById("prog").textContent=d===its.length?"All "+its.length+" done 🎉":d+" of "+its.length+" done";
+document.getElementById("b").style.width=(100*d/its.length)+"%";const L=document.getElementById("list"),D=document.getElementById("done");L.innerHTML="";D.innerHTML="";
+its.forEach(i=>(i.done?D:L).append(row(i)));document.getElementById("ds").textContent="Done ("+d+") – untick to undo";document.getElementById("dd").style.display=d?"":"none"}
+async function toggle(id,v){try{const r=await fetch(U,{cache:"no-store"});const f=await r.json();f.data.items.find(i=>i.id===id).done=v;
+const p=await fetch(U,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:f.name,data:f.data})});S=await p.json();render();msg("")}catch(e){msg("Couldn't save, please try again");load()}}
+load();setInterval(load,15000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
+</script></body></html>
